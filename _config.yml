@@ -1,0 +1,26 @@
+# Site settings
+name: ZQblog
+email: m15513546321_2@163.com
+author: ZQ
+url: http://www.hifreud.com
+resume_site: http://www.hifreud.com/Resume.io/
+github: https://github.com/15513546321/15513546321.github.io.git
+#baseurl: "/ZQblog"
+description: 穷则变，变则通，通则达！
+meta_description: 张擎：从今天开始记录学到的知识点——生命不止;折腾不休
+motto: It's our wits that make us men.
+banner: 学而不思则罔，思而不学则殆。
+plugins: [jekyll-paginate]
+#permalink: /:categories/:year/:month/:day/:title/
+permalink: /:year/:month/:day/:title/
+paginate: 10
+
+exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'Rakefile']
+
+github_username: 15513546321
+
+# Build settings
+markdown: kramdown
+
+baidu_analysis: 94be4b0f9fc5d94cc0d0415ea6761ae9
+
