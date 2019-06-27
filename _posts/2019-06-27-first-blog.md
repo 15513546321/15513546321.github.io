@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "我的博客使用记录"
+title:  "我的博客使用方法"
 date:   2019-06-27 14:05:01 +0800
-categories: 博客使用方法
-tag: 博客
+categories: blog
+tag: blog
 ---
 
 * content
@@ -18,3 +18,18 @@ tag: 博客
 在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
 
 将博客下载到本地后，找到_posts，在这个文件夹下可以按照指定格式生成博客
+
+上传博客到github，按顺序执行
+
+右键博客，打开Git Bash
+
+git config --global user.email "m15513546321_2@163.com"
+git config --global user.name "15513546321"
+
+git add .    （注：别忘记后面的.）
+
+git commit  -m  "提交信息"  （注：“提交信息”里面换成你需要，如“first commit”）
+
+git push -u origin master   （注：此操作目的是把本地仓库push到github上面，此步骤需要你输入帐号和密码）
+
+访问15513546321.github.io
