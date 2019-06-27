@@ -10,22 +10,26 @@ tag: blog
 {:toc}
 
 
-First POST build by Jekyll.
+打开 msysgit.github.io，安装完成后，进入到要托管的项目根目录，
+右键启动Git Bash命令行下载并安装最新版本的msysgit
 
+在我的github上面找到博客下载地址
 
-诫子书				{#zhugeliang}
-------------------------
+在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
 
-![诫子书]({{ '/styles/images/jiezishu.jpg' | prepend: site.baseurl  }})
+将博客下载到本地后，找到_posts，在这个文件夹下可以按照指定格式生成博客
 
+上传博客到github，按顺序执行
 
-[诸葛亮](#)
+右键博客，打开Git Bash
 
+git config --global user.email "m15513546321_2@163.com"
+git config --global user.name "15513546321"
 
-夫君子之行，静以修身，俭以养德。非淡泊(澹泊)无以明志，非宁静无以致远。夫学须静也，才须学也。非学无以广才，非志无以成学。淫慢则不能励精，险躁则不能冶性。
-年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及！
+git add .    （注：别忘记后面的.）
 
+git commit  -m  "提交信息"  （注：“提交信息”里面换成你需要，如“first commit”）
 
-[jekyll]:      http://jekyllrb.com
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-help]: https://github.com/jekyll/jekyll-help
+git push -u origin master   （注：此操作目的是把本地仓库push到github上面，此步骤需要你输入帐号和密码）
+
+访问15513546321.github.io
