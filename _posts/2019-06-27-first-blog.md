@@ -10,12 +10,13 @@ tag: blog
 {:toc}
 
 
-打开 msysgit.github.io，安装完成后，进入到要托管的项目根目录，
-右键启动Git Bash命令行下载并安装最新版本的msysgit
+打开 msysgit.github.io，安装完成后，进入到要托管的项目根目录，下载并安装最新版本的msysgit
 
 在我的github上面找到博客下载地址，地址如下
 
 ![地址]({{ '/styles/images/address.jpg' | prepend: site.baseurl  }})
+
+右键启动Git Bash命令行
 
 在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
 
@@ -23,7 +24,7 @@ tag: blog
 
 上传博客到github，按顺序执行
 
-右键博客，打开Git Bash
+右键博客所在文件夹，打开Git Bash
 
 git config --global user.email "m15513546321_2@163.com"
 git config --global user.name "15513546321"
