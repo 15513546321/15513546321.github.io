@@ -13,7 +13,9 @@ tag: blog
 打开 msysgit.github.io，安装完成后，进入到要托管的项目根目录，
 右键启动Git Bash命令行下载并安装最新版本的msysgit
 
-在我的github上面找到博客下载地址
+在我的github上面找到博客下载地址，地址如下
+
+![地址]({{ '/styles/images/address.png' | prepend: site.baseurl  }})
 
 在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
 

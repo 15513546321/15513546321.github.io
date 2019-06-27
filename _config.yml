@@ -8,7 +8,7 @@ github: https://github.com/15513546321/15513546321.github.io.git
 #baseurl: "/ZQblog"
 description: 穷则变，变则通，通则达！
 meta_description: 张擎：记录平时的一些知识点
-motto: 压缩：只要我E的够快，寂寞就追不上我
+motto: day day up
 banner: 学而不思则罔，思而不学则殆。
 plugins: [jekyll-paginate]
 #permalink: /:categories/:year/:month/:day/:title/
