@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "我的博客使用方法"
+title:  "first blog"
 date:   2019-06-27 14:05:01 +0800
 categories: blog
 tag: blog
