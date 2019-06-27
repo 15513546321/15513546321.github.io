@@ -16,6 +16,9 @@ tag: blog
 
 ![地址]({{ '/styles/images/address.jpg' | prepend: site.baseurl  }})
 
+[诸葛亮](#)
+诫子书				{#zhugeliang}
+
 右键启动Git Bash命令行
 
 在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
