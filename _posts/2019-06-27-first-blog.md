@@ -15,7 +15,7 @@ tag: blog
 
 在我的github上面找到博客下载地址，地址如下
 
-![地址]({{ '/styles/images/address.png' | prepend: site.baseurl  }})
+![地址]({{ '/styles/images/address.jpg' | prepend: site.baseurl  }})
 
 在命令框中执行git clone https://github.com/15513546321/15513546321.github.io.git
 
