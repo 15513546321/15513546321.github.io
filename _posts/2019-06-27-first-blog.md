@@ -26,7 +26,7 @@ tag: blog
 
 右键博客所在文件夹，打开Git Bash
 
-git config --global user.email "m15513546321_2@163.com"
+git config --global user.email "m15513546321_2@163.com"<br>
 git config --global user.name "15513546321"
 
 git add .    （注：别忘记后面的.）
