@@ -14,7 +14,7 @@ tag: blog
 
 在我的github上面找到博客下载地址，地址如下
 
-!({{ '/styles/images/address.jpg' | prepend: site.baseurl  }})
+![/styles/images/address.jpg]({{ '/styles/images/address.jpg' | prepend: site.baseurl  }})
 
 右键启动Git Bash命令行
 
