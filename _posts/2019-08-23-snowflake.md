@@ -58,7 +58,7 @@ Snowflake算法核心把时间戳，工作机器id，序列号组合在一起。
 &nbsp;* SnowFlake的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分)，并且效率较高，经测试，SnowFlake每秒能够产生26万ID左右。<br>
 &nbsp;*/<br>
 class SnowflakeIdWorker {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;/** 开始时间截 (2015-01-01) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 开始时间截 (2019-08-23) */<br>
 &nbsp;&nbsp;&nbsp;&nbsp;private final long twepoch = 1489111610226L;<br>
 
 &nbsp;&nbsp;&nbsp;&nbsp;/** 机器id所占的位数 */<br>
@@ -79,153 +79,153 @@ class SnowflakeIdWorker {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;/** 机器ID向左移12位 */<br>
 &nbsp;&nbsp;&nbsp;&nbsp;private final long workerIdShift = sequenceBits;<br>
 
-    /** 数据标识id向左移17位(12+5) */<br>
-    private final long dataCenterIdShift = sequenceBits + workerIdBits;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 数据标识id向左移17位(12+5) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long dataCenterIdShift = sequenceBits + workerIdBits;<br>
 
-    /** 时间截向左移22位(5+5+12) */<br>
-    private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 时间截向左移22位(5+5+12) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;<br>
 
-    /** 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095) */<br>
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long sequenceMask = -1L ^ (-1L << sequenceBits);<br>
 
-    /** 工作机器ID(0~31) */<br>
-    private long workerId;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 工作机器ID(0~31) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private long workerId;<br>
 
-    /** 数据中心ID(0~31) */<br>
-    private long dataCenterId;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 数据中心ID(0~31) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private long dataCenterId;<br>
 
-    /** 毫秒内序列(0~4095) */<br>
-    private long sequence = 0L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 毫秒内序列(0~4095) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private long sequence = 0L;<br>
 
-    /** 上次生成ID的时间截 */<br>
-    private long lastTimestamp = -1L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 上次生成ID的时间截 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private long lastTimestamp = -1L;<br>
 
-    private static SnowflakeIdWorker idWorker;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private static SnowflakeIdWorker idWorker;<br>
 
-    static {<br>
-        idWorker = new SnowflakeIdWorker(getWorkId(),getDataCenterId());<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;static {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idWorker = new SnowflakeIdWorker(getWorkId(),getDataCenterId());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    //=============Constructors==============<br>
-    /**<br>
-     * 构造函数<br>
-     * @param workerId 工作ID (0~31)<br>
-     * @param dataCenterId 数据中心ID (0~31)<br>
-     */<br>
-    public SnowflakeIdWorker(long workerId, long dataCenterId) {<br>
-        if (workerId > maxWorkerId || workerId < 0) {<br>
-            throw new IllegalArgumentException(String.format("workerId can't be greater than %d or less than 0", maxWorkerId));<br>
-        }<br>
-        if (dataCenterId > maxDataCenterId || dataCenterId < 0) {<br>
-            throw new IllegalArgumentException(String.format("dataCenterId can't be greater than %d or less than 0", maxDataCenterId));<br>
-        }<br>
-        this.workerId = workerId;<br>
-        this.dataCenterId = dataCenterId;<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;//=============Constructors==============<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* 构造函数<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @param workerId 工作ID (0~31)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @param dataCenterId 数据中心ID (0~31)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public SnowflakeIdWorker(long workerId, long dataCenterId) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (workerId > maxWorkerId || workerId < 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new IllegalArgumentException(String.format("workerId can't be greater than %d or less than 0", maxWorkerId));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (dataCenterId > maxDataCenterId || dataCenterId < 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new IllegalArgumentException(String.format("dataCenterId can't be greater than %d or less than 0", maxDataCenterId));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.workerId = workerId;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.dataCenterId = dataCenterId;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    // =========Methods=========<br>
-    /**<br>
-     * 获得下一个ID (该方法是线程安全的)<br>
-     * @return SnowflakeId<br>
-     */<br>
-    public synchronized long nextId() {<br>
-        long timestamp = timeGen();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// =========Methods=========<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* 获得下一个ID (该方法是线程安全的)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @return SnowflakeId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public synchronized long nextId() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long timestamp = timeGen();<br>
 
-        //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常<br>
-        if (timestamp < lastTimestamp) {<br>
-            throw new RuntimeException(<br>
-                    String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));<br>
-        }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (timestamp < lastTimestamp) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new RuntimeException(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-        //如果是同一时间生成的，则进行毫秒内序列<br>
-        if (lastTimestamp == timestamp) {<br>
-            sequence = (sequence + 1) & sequenceMask;<br>
-            //毫秒内序列溢出<br>
-            if (sequence == 0) {<br>
-                //阻塞到下一个毫秒,获得新的时间戳
-                timestamp = tilNextMillis(lastTimestamp);<br>
-            }<br>
-        }<br>
-        //时间戳改变，毫秒内序列重置<br>
-        else {<br>
-            sequence = 0L;<br>
-        }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//如果是同一时间生成的，则进行毫秒内序列<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (lastTimestamp == timestamp) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sequence = (sequence + 1) & sequenceMask;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//毫秒内序列溢出<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sequence == 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//阻塞到下一个毫秒,获得新的时间戳
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp = tilNextMillis(lastTimestamp);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//时间戳改变，毫秒内序列重置<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sequence = 0L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-        //上次生成ID的时间截<br>
-        lastTimestamp = timestamp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//上次生成ID的时间截<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastTimestamp = timestamp;<br>
 
-        //移位并通过或运算拼到一起组成64位的ID<br>
-        return ((timestamp - twepoch) << timestampLeftShift)<br>
-                | (dataCenterId << dataCenterIdShift)<br>
-                | (workerId << workerIdShift)<br>
-                | sequence;<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//移位并通过或运算拼到一起组成64位的ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return ((timestamp - twepoch) << timestampLeftShift)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| (dataCenterId << dataCenterIdShift)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| (workerId << workerIdShift)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| sequence;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    /**<br>
-     * 阻塞到下一个毫秒，直到获得新的时间戳<br>
-     * @param lastTimestamp 上次生成ID的时间截<br>
-     * @return 当前时间戳<br>
-     */<br>
-    protected long tilNextMillis(long lastTimestamp) {<br>
-        long timestamp = timeGen();<br>
-        while (timestamp <= lastTimestamp) {<br>
-            timestamp = timeGen();<br>
-        }<br>
-        return timestamp;<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* 阻塞到下一个毫秒，直到获得新的时间戳<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @param lastTimestamp 上次生成ID的时间截<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @return 当前时间戳<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected long tilNextMillis(long lastTimestamp) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long timestamp = timeGen();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (timestamp <= lastTimestamp) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp = timeGen();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return timestamp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    /**<br>
-     * 返回以毫秒为单位的当前时间<br>
-     * @return 当前时间(毫秒)<br>
-     */<br>
-    protected long timeGen() {<br>
-        return System.currentTimeMillis();<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* 返回以毫秒为单位的当前时间<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @return 当前时间(毫秒)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected long timeGen() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return System.currentTimeMillis();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    private static Long getWorkId(){<br>
-        try {<br>
-            String hostAddress = Inet4Address.getLocalHost().getHostAddress();<br>
-            int[] ints = StringUtils.toCodePoints(hostAddress);<br>
-            int sums = 0;<br>
-            for(int b : ints){<br>
-                sums += b;<br>
-            }<br>
-            return (long)(sums % 32);<br>
-        } catch (UnknownHostException e) {<br>
-            // 如果获取失败，则使用随机数备用<br>
-            return RandomUtils.nextLong(0,31);<br>
-        }<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private static Long getWorkId(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String hostAddress = Inet4Address.getLocalHost().getHostAddress();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int[] ints = StringUtils.toCodePoints(hostAddress);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int sums = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int b : ints){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sums += b;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (long)(sums % 32);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (UnknownHostException e) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 如果获取失败，则使用随机数备用<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return RandomUtils.nextLong(0,31);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    private static Long getDataCenterId(){<br>
-        int[] ints = StringUtils.toCodePoints(SystemUtils.getHostName());<br>
-        int sums = 0;<br>
-        for (int i: ints) {<br>
-            sums += i;<br>
-        }<br>
-        return (long)(sums % 32);<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private static Long getDataCenterId(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int[] ints = StringUtils.toCodePoints(SystemUtils.getHostName());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int sums = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i: ints) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sums += i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (long)(sums % 32);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
 
-    /**<br>
-     * 静态工具类<br>
-     *<br>
-     * @return<br>
-     */<br>
-    public static Long generateId(){<br>
-        long id = idWorker.nextId();<br>
-        return id;<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* 静态工具类<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* @return<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public static Long generateId(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long id = idWorker.nextId();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
-    //==========Test=========<br>
-    /** 测试 */<br>
-    public static void main(String[] args) {<br>
-        System.out.println(System.currentTimeMillis());<br>
-        long startTime = System.nanoTime();<br>
-        for (int i = 0; i < 50000; i++) {<br>
-            long id = SnowflakeIdWorker.generateId();<br>
-            System.out.println(id);<br>
-        }<br>
-        System.out.println((System.nanoTime()-startTime)/1000000+"ms");<br>
-    }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;//==========Test=========<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 测试 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public static void main(String[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(System.currentTimeMillis());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long startTime = System.nanoTime();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i < 50000; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long id = SnowflakeIdWorker.generateId();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println((System.nanoTime()-startTime)/1000000+"ms");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 }<br>
