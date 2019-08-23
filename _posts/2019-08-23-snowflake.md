@@ -36,48 +36,48 @@ Snowflake算法核心把时间戳，工作机器id，序列号组合在一起。
 依赖包			{#Dependency_Packages}
 ===================
 
-&nbsp;<dependency><br>
+&nbsp;\<dependency\><br>
 &nbsp;&nbsp;&nbsp;&nbsp;\<groupId\>org.apache.commons\</groupId\><br>
 &nbsp;&nbsp;&nbsp;&nbsp;\<artifactId\>commons-lang3\</artifactId\><br>
 &nbsp;&nbsp;&nbsp;&nbsp;\<version\>3.8\</version\><br>
-&nbsp;</dependency>
+&nbsp;\</dependency\><br>
 
 实现方式-Java			{#Implementation}
 ===================
 
 /**<br>
- * Twitter_Snowflake<br>
- * SnowFlake的结构如下(每部分用-分开):<br>
- * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 <br>
- * 1位标识，由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0<br>
- * 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截)
- * 得到的值），这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的（如下下面程序IdWorker类的startTime属性）。41位的时间截，可以使用69年，年T = (1L << 41) / (1000L * 60 * 60 * 24 * 365) = 69<br>
- * 10位的数据机器位，可以部署在1024个节点，包括5位datacenterId和5位workerId<br>
- * 12位序列，毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号<br>
- * 加起来刚好64位，为一个Long型。<br>
- * SnowFlake的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分)，并且效率较高，经测试，SnowFlake每秒能够产生26万ID左右。<br>
- */
+&nbsp;* Twitter_Snowflake<br>
+&nbsp;* SnowFlake的结构如下(每部分用-分开):<br>
+&nbsp;* 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 <br>
+&nbsp;* 1位标识，由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0<br>
+&nbsp;* 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截)
+&nbsp;* 得到的值），这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的（如下下面程序IdWorker类的startTime属性）。41位的时间截，可以使用69年，年T = (1L << 41) / (1000L * 60 * 60 * 24 * 365) = 69<br>
+&nbsp;* 10位的数据机器位，可以部署在1024个节点，包括5位datacenterId和5位workerId<br>
+&nbsp;* 12位序列，毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号<br>
+&nbsp;* 加起来刚好64位，为一个Long型。<br>
+&nbsp;* SnowFlake的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分)，并且效率较高，经测试，SnowFlake每秒能够产生26万ID左右。<br>
+&nbsp;*/<br>
 class SnowflakeIdWorker {<br>
-    /** 开始时间截 (2015-01-01) */<br>
-    private final long twepoch = 1489111610226L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 开始时间截 (2015-01-01) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long twepoch = 1489111610226L;<br>
 
-    /** 机器id所占的位数 */<br>
-    private final long workerIdBits = 5L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 机器id所占的位数 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long workerIdBits = 5L;<br>
 
-    /** 数据标识id所占的位数 */<br>
-    private final long dataCenterIdBits = 5L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 数据标识id所占的位数 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long dataCenterIdBits = 5L;<br>
 
-    /** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */<br>
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long maxWorkerId = -1L ^ (-1L << workerIdBits);<br>
 
-    /** 支持的最大数据标识id，结果是31 */<br>
-    private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 支持的最大数据标识id，结果是31 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);<br>
 
-    /** 序列在id中占的位数 */<br>
-    private final long sequenceBits = 12L;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 序列在id中占的位数 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long sequenceBits = 12L;<br>
 
-    /** 机器ID向左移12位 */<br>
-    private final long workerIdShift = sequenceBits;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/** 机器ID向左移12位 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private final long workerIdShift = sequenceBits;<br>
 
     /** 数据标识id向左移17位(12+5) */<br>
     private final long dataCenterIdShift = sequenceBits + workerIdBits;<br>
