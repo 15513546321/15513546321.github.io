@@ -37,9 +37,9 @@ Snowflake算法核心把时间戳，工作机器id，序列号组合在一起。
 ===================
 
 &nbsp;<dependency><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<groupId>org.apache.commons</groupId><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<artifactId>commons-lang3</artifactId><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<version>3.8</version><br>
+&nbsp;&nbsp;&nbsp;&nbsp;\<groupId\>org.apache.commons\</groupId\><br>
+&nbsp;&nbsp;&nbsp;&nbsp;\<artifactId\>commons-lang3\</artifactId\><br>
+&nbsp;&nbsp;&nbsp;&nbsp;\<version\>3.8\</version\><br>
 &nbsp;</dependency>
 
 实现方式-Java			{#Implementation}
