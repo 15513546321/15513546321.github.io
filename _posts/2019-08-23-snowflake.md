@@ -208,10 +208,8 @@ class SnowflakeIdWorker {<br>
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;/**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;* 静态工具类<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*<br>
-&nbsp;&nbsp;&nbsp;&nbsp;* @return<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*静态工具类<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*@return<br>
 &nbsp;&nbsp;&nbsp;&nbsp;public static Long generateId(){<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long id = idWorker.nextId();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return id;<br>
